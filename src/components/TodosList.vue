@@ -2,12 +2,9 @@
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
+import type { Todo } from '@/type/todo';
+import TodoItem from './TodoItem.vue';
 
-interface Todo {
-  id: string;
-  title: string;
-  done: boolean;
-}
 const todos = ref([] as Todo[]);
 
 async function getTodos() {
@@ -36,6 +33,17 @@ const addTodo = async () => {
     console.error('Произошла ошибка при создании записи', e);
   }
 };
+const editTodo = async (todo: Todo) => {
+  try {
+    const res = await axios.patch(`http://localhost:3001/todos/${todo.id}`, {
+      title: `${todo.title}`
+    });
+    todos.value = [...todos.value, res.data];
+  } catch (e) {
+    console.error('Произошла ошибка при создании записи', e);
+  }
+};
+
 const delTodo = async (todoId: string) => {
   try {
     const res = await axios.delete(`http://localhost:3001/todos/${todoId}`);
@@ -51,27 +59,21 @@ const delTodo = async (todoId: string) => {
     <h1>Todos</h1>
     <button type="button" @click="addTodo">Add todo</button>
     <TransitionGroup tag="ul" name="fade" class="container">
-      <div v-for="todo of todos" class="item" :key="todo.id">
-        {{ todo }}
-        <button @click="delTodo(todo.id)">x</button>
-      </div>
+      <TodoItem
+        v-for="todo of todos"
+        :key="todo.id"
+        :todo="todo"
+        @delTodo="delTodo"
+        @editTodo="editTodo"
+      />
     </TransitionGroup>
   </div>
 </template>
 
-<style>
+<style scoped>
 .container {
   position: relative;
   padding: 0;
-}
-
-.item {
-  width: 100%;
-  height: 30px;
-  background-color: #f3f3f3;
-  border: 1px solid #666;
-  box-sizing: border-box;
-  color: black;
 }
 
 /* 1. declare transition */
