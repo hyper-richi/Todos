@@ -21,16 +21,23 @@ onMounted(() => {
   getTodos();
 });
 
-const addTodo = async () => {
-  try {
-    const res = await axios.post('http://localhost:3001/todos', {
-      id: `${uuid()}`,
-      title: 'this.title',
-      done: false
-    });
-    todos.value = [...todos.value, res.data];
-  } catch (e) {
-    console.error('Произошла ошибка при создании записи', e);
+const addTodo = async (e: Event) => {
+  const value = (e.target as HTMLInputElement).value.trim();
+  if (value) {
+    try {
+      const res = await axios.post('http://localhost:3001/todos', {
+        id: `${uuid()}`,
+        title: value,
+        done: false
+      });
+      (e.target as HTMLInputElement).value = '';
+      console.log('res.status: ', res.status);
+      if (res.status === 201) {
+        todos.value = [...todos.value, res.data];
+      }
+    } catch (e) {
+      console.error('Произошла ошибка при создании записи', e);
+    }
   }
 };
 const editTodo = async (todo: Todo) => {
@@ -55,9 +62,18 @@ const delTodo = async (todoId: string) => {
 </script>
 
 <template>
-  <div>
-    <h1>Todos</h1>
-    <button type="button" @click="addTodo">Add todo</button>
+  <div class="todo">
+    <h1 class="todo__title">Todos</h1>
+    <div class="todo__input">
+      <input
+        type="text"
+        value=""
+        class="input"
+        placeholder="Add a new todo..."
+        @keyup.enter="addTodo"
+      />
+      <button class="button" type="button" @click="addTodo">Add todo</button>
+    </div>
     <TransitionGroup tag="div" name="fade" class="container">
       <TodoItem
         v-for="todo of todos"
@@ -71,6 +87,62 @@ const delTodo = async (todoId: string) => {
 </template>
 
 <style scoped>
+.todo {
+  background-color: #1f2937;
+  padding: 24px;
+  margin: 0 24px;
+  border-radius: 8px;
+  max-width: 512px;
+  width: 100%;
+}
+
+.todo__title {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.todo__input {
+  display: flex;
+  margin-bottom: 24px;
+}
+.input {
+  color: #ffffff;
+  padding: 8px;
+  border: 2px solid #9ca3af;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  flex-grow: 1;
+  background-color: #374151;
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.button {
+  cursor: pointer;
+  color: #ffffff;
+  padding-right: 24px;
+  padding-left: 24px;
+  background-color: #3b82f6;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  text-transform: none;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+
 .container {
   position: relative;
   padding: 0;

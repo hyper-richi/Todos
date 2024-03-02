@@ -19,15 +19,17 @@ const emit = defineEmits<{ (e: 'delTodo', id: string): void; (e: 'editTodo', tod
 <style scoped>
 .item {
   width: 100%;
-  background-color: #f3f3f3;
-  border: 1px solid #666;
+  background-color: #374151;
   box-sizing: border-box;
-  color: black;
+  color: #ffffff;
   position: relative;
   font-size: 24px;
   display: flex;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 16px;
+  border-radius: 6px;
+  align-items: center;
+  display: flex;
+  gap: 8px;
 }
 
 .item .delete {
@@ -62,12 +64,10 @@ const emit = defineEmits<{ (e: 'delTodo', id: string): void; (e: 'editTodo', tod
 
 .item label {
   word-break: break-all;
-  padding: 15px 15px 15px 20px;
-  display: block;
-  line-height: 1.2;
+  flex-grow: 1;
   transition: color 0.4s;
   font-weight: 400;
-  color: #484848;
+  color: #fff;
 }
 
 .toggle {

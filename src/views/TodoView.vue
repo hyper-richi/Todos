@@ -3,8 +3,17 @@ import TodosList from '../components/TodosList.vue';
 </script>
 <template>
   <main>
-    <TodosList />
+    <div class="container">
+      <TodosList />
+    </div>
   </main>
 </template>
 
-<style></style>
+<style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+</style>

@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router';
 </script>
 
 <template>
-  <header>
+  <header class="header">
     <div class="wrapper">
       <nav>
         <RouterLink to="/">Home</RouterLink>
@@ -16,6 +16,9 @@ import { RouterLink, RouterView } from 'vue-router';
 </template>
 
 <style scoped>
+.header {
+  margin: 24px 0;
+}
 nav {
   width: 100%;
   font-size: 12px;
