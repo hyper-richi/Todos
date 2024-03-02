@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import type { Todo } from '@/type';
+import { ref } from 'vue';
 
 interface Props {
   todo: Todo;
 }
-defineProps<Props>();
+const { todo } = defineProps<Props>();
+const checked = ref(todo.done);
 
-const emit = defineEmits<{ (e: 'delTodo', id: string): void; (e: 'editTodo', todo: Todo): void }>();
+const emit = defineEmits<{
+  (e: 'delTodo', id: string): void;
+  (e: 'editTodo', todo: Todo): void;
+  (e: 'toggleTodo', todo: Todo): void;
+}>();
 </script>
 <template>
-  <div class="item">
-    <input class="toggle" type="checkbox" />
+  <div class="item" :class="{ completed: checked /* editing: todo === editedTodo */ }">
+    <input class="toggle" type="checkbox" v-model="checked" @change="emit('toggleTodo', todo)" />
     <label @dblclick="emit('editTodo', todo)">{{ todo.title }}</label>
-    <button class="delete" @click="emit('delTodo', todo.id)"></button>
+    <button class="delete" @click="emit('delTodo', todo.id)">X</button>
   </div>
 </template>
 
@@ -23,7 +29,6 @@ const emit = defineEmits<{ (e: 'delTodo', id: string): void; (e: 'editTodo', tod
   box-sizing: border-box;
   color: #ffffff;
   position: relative;
-  font-size: 24px;
   display: flex;
   padding: 16px;
   border-radius: 6px;
@@ -33,33 +38,30 @@ const emit = defineEmits<{ (e: 'delTodo', id: string): void; (e: 'editTodo', tod
 }
 
 .item .delete {
-  display: none;
-  position: absolute;
-  top: 0;
-  right: 10px;
-  bottom: 0;
-  width: 40px;
-  height: 40px;
-  margin: auto 0;
-  font-size: 30px;
-  color: #949494;
+  font-size: 16px;
+  color: #ef4444;
   transition: color 0.2s ease-out;
+  margin-left: 8px;
+  text-transform: none;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  border-radius: 0;
+  background-color: transparent;
+  background-image: none;
+  padding: 0;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+  cursor: pointer;
 }
 
-.item .delete:hover,
-.item .delete:focus {
-  color: #c18585;
+.item .delete:hover {
+  color: red;
 }
-
-.item .delete:after {
-  content: '×';
-  display: block;
-  height: 100%;
-  line-height: 1.1;
-}
-
-.item:hover .delete {
-  display: block;
+.item .delete:active {
+  color: red;
 }
 
 .item label {
@@ -68,6 +70,11 @@ const emit = defineEmits<{ (e: 'delTodo', id: string): void; (e: 'editTodo', tod
   transition: color 0.4s;
   font-weight: 400;
   color: #fff;
+}
+
+.item.completed label {
+  color: #949494;
+  text-decoration: line-through;
 }
 
 .toggle {

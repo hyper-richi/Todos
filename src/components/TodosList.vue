@@ -31,7 +31,6 @@ const addTodo = async (e: Event) => {
         done: false
       });
       (e.target as HTMLInputElement).value = '';
-      console.log('res.status: ', res.status);
       if (res.status === 201) {
         todos.value = [...todos.value, res.data];
       }
@@ -40,6 +39,20 @@ const addTodo = async (e: Event) => {
     }
   }
 };
+
+const toggleTodo = async (todo: Todo) => {
+  try {
+    const res = await axios.patch(`http://localhost:3001/todos/${todo.id}`, {
+      done: !todo.done
+    });
+    if (res.status === 201) {
+      todos.value = res.data;
+    }
+  } catch (e) {
+    console.error('Произошла ошибка при создании записи', e);
+  }
+};
+
 const editTodo = async (todo: Todo) => {
   try {
     const res = await axios.patch(`http://localhost:3001/todos/${todo.id}`, {
@@ -81,6 +94,7 @@ const delTodo = async (todoId: string) => {
         :todo="todo"
         @delTodo="delTodo"
         @editTodo="editTodo"
+        @toggleTodo="toggleTodo"
       />
     </TransitionGroup>
   </div>
