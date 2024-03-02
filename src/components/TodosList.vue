@@ -58,7 +58,7 @@ const delTodo = async (todoId: string) => {
   <div>
     <h1>Todos</h1>
     <button type="button" @click="addTodo">Add todo</button>
-    <TransitionGroup tag="ul" name="fade" class="container">
+    <TransitionGroup tag="div" name="fade" class="container">
       <TodoItem
         v-for="todo of todos"
         :key="todo.id"
@@ -74,6 +74,9 @@ const delTodo = async (todoId: string) => {
 .container {
   position: relative;
   padding: 0;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 1. declare transition */
