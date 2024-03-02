@@ -5,19 +5,56 @@ import { ref } from 'vue';
 interface Props {
   todo: Todo;
 }
+const editedTodo = ref();
+const text = ref('');
+
 const { todo } = defineProps<Props>();
 const checked = ref(todo.done);
 
 const emit = defineEmits<{
   (e: 'delTodo', id: string): void;
-  (e: 'editTodo', todo: Todo): void;
+  (e: 'editTodo', id: string, text: string): void;
   (e: 'toggleTodo', todo: Todo): void;
 }>();
+
+let beforeEditCache = '';
+
+function editTodo(todo: Todo) {
+  beforeEditCache = todo.title;
+  text.value = todo.title;
+  editedTodo.value = todo;
+}
+
+function doneEdit(todo: Todo) {
+  if (editedTodo.value) {
+    editedTodo.value = null;
+    emit('editTodo', todo.id, text.value);
+    if (!todo.title) {
+      emit('delTodo', todo.id);
+    }
+  }
+}
+
+function cancelEdit(todo: Todo) {
+  editedTodo.value = null;
+  // todo.title = beforeEditCache;
+}
 </script>
 <template>
-  <div class="item" :class="{ completed: checked /* editing: todo === editedTodo */ }">
+  <div class="item" :class="{ completed: checked, editing: todo === editedTodo }">
     <input class="toggle" type="checkbox" v-model="checked" @change="emit('toggleTodo', todo)" />
-    <label @dblclick="emit('editTodo', todo)">{{ todo.title }}</label>
+    <input
+      class="edit"
+      type="text"
+      v-if="todo === editedTodo"
+      v-model="text"
+      @vue:mounted="({ el }: { el: HTMLElement }) => el.focus()"
+      @keyup.enter="doneEdit(todo)"
+      @keyup.escape="cancelEdit(todo)"
+      @blur="doneEdit(todo)"
+    />
+
+    <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
     <button class="delete" @click="emit('delTodo', todo.id)">X</button>
   </div>
 </template>
@@ -31,6 +68,8 @@ const emit = defineEmits<{
   position: relative;
   display: flex;
   padding: 16px;
+  font-size: 16px;
+
   border-radius: 6px;
   align-items: center;
   display: flex;
@@ -38,8 +77,7 @@ const emit = defineEmits<{
 }
 
 .item .delete {
-  font-size: 16px;
-  color: #ef4444;
+  color: #c18585;
   transition: color 0.2s ease-out;
   margin-left: 8px;
   text-transform: none;
@@ -77,10 +115,14 @@ const emit = defineEmits<{
   text-decoration: line-through;
 }
 
+.item.editing label {
+  display: none;
+}
+
 .toggle {
   text-align: center;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   position: relative;
   cursor: pointer;
   top: 0;
@@ -94,8 +136,8 @@ const emit = defineEmits<{
   content: '';
   display: block;
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   top: 0;
   left: 0;
   background-color: #e9e9e9;
@@ -105,8 +147,8 @@ const emit = defineEmits<{
   content: '';
   display: block;
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   top: 0;
   left: 0;
   background-color: #1e80ef;
@@ -116,8 +158,8 @@ const emit = defineEmits<{
 .toggle:checked:after {
   content: '';
   display: block;
-  width: 10px;
-  height: 20px;
+  width: 7px;
+  height: 18px;
   border: solid white;
   border-width: 0 2px 2px 0;
   -webkit-transform: rotate(45deg);
@@ -126,5 +168,35 @@ const emit = defineEmits<{
   position: absolute;
   top: 2px;
   left: 10px;
+}
+
+.edit {
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-weight: inherit;
+  border: none;
+  border-bottom: 1px solid #999;
+  background-color: #374151;
+  font-size: 16px;
+
+  color: #ffffff;
+  width: 100%;
+}
+
+.edit:focus-visible {
+  outline: none;
+}
+
+.edit::placeholder {
+  color: #9ca3af;
+}
+
+/* .edit {
+  display: none;
+} */
+
+.editing .edit {
+  display: block;
 }
 </style>

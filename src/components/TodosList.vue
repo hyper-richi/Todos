@@ -7,6 +7,8 @@ import TodoItem from './TodoItem.vue';
 
 const todos = ref([] as Todo[]);
 
+const text = ref('');
+
 async function getTodos() {
   try {
     const res = await axios.get(`http://localhost:3001/todos`);
@@ -21,16 +23,15 @@ onMounted(() => {
   getTodos();
 });
 
-const addTodo = async (e: Event) => {
-  const value = (e.target as HTMLInputElement).value.trim();
-  if (value) {
+const addTodo = async () => {
+  if (text.value) {
     try {
       const res = await axios.post('http://localhost:3001/todos', {
         id: `${uuid()}`,
-        title: value,
+        title: text.value,
         done: false
       });
-      (e.target as HTMLInputElement).value = '';
+      text.value = '';
       if (res.status === 201) {
         todos.value = [...todos.value, res.data];
       }
@@ -53,14 +54,15 @@ const toggleTodo = async (todo: Todo) => {
   }
 };
 
-const editTodo = async (todo: Todo) => {
+const editTodo = async (id: string, text: string) => {
   try {
-    const res = await axios.patch(`http://localhost:3001/todos/${todo.id}`, {
-      title: `${todo.title}`
+    const res = await axios.patch(`http://localhost:3001/todos/${id}`, {
+      title: text
     });
-    todos.value = [...todos.value, res.data];
+    const findIdx = todos.value.findIndex((item) => item.id === id);
+    todos.value.splice(findIdx, 1, res.data);
   } catch (e) {
-    console.error('Произошла ошибка при создании записи', e);
+    console.error('Произошла ошибка при изменении записи', e);
   }
 };
 
@@ -80,12 +82,12 @@ const delTodo = async (todoId: string) => {
     <div class="todo__input">
       <input
         type="text"
-        value=""
+        v-model="text"
         class="input"
         placeholder="Add a new todo..."
         @keyup.enter="addTodo"
       />
-      <button class="button" type="button" @click="addTodo">Add todo</button>
+      <button class="todo__button" type="button" @click="addTodo">Add todo</button>
     </div>
     <TransitionGroup tag="div" name="fade" class="container">
       <TodoItem
@@ -139,7 +141,7 @@ const delTodo = async (todoId: string) => {
   color: #9ca3af;
 }
 
-.button {
+.todo__button {
   cursor: pointer;
   color: #ffffff;
   padding-right: 24px;
@@ -156,7 +158,15 @@ const delTodo = async (todoId: string) => {
   border-style: solid;
   border-color: #e5e7eb;
 }
-
+.todo__button:hover {
+  background-color: #186bf4;
+}
+.todo__button:active {
+  background-color: #3b82f6;
+}
+.todo__button:focus-visible {
+  outline: none;
+}
 .container {
   position: relative;
   padding: 0;
