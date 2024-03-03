@@ -64,7 +64,6 @@ import ESLintIcon from '@/assets/svg/badges/eslint.svg';
 }
 
 .item {
-  whitespace: nowrap;
   margin-top: 12px;
 }
 .flex {

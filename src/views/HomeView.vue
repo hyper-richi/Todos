@@ -11,7 +11,7 @@ import HomeIcon from '@/assets/home.svg';
         <h2 class="stack__title">Stack на проекте:</h2>
         <ListStack />
       </div>
-      <HomeIcon />
+      <img src="./assets/home.svg" alt="home.svg" class="home__img" />
     </div>
   </div>
 </template>
@@ -37,10 +37,16 @@ import HomeIcon from '@/assets/home.svg';
   display: flex;
   gap: 20px;
   justify-content: space-between;
+
+  @media screen and (max-width: 820px) {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
-.stack__list {
-  min-width: 255px;
+.home__img {
+  max-width: 500px;
+  width: 100%;
 }
 
 .stack__title {
