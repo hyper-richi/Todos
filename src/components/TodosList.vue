@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
-import type { Todo } from '@/type/todo';
 import TodoItem from './TodoItem.vue';
 import { useTodoListStore } from '@/stores/todoList';
 import { storeToRefs } from 'pinia';
 
-const todos = ref([] as Todo[]);
 const store = useTodoListStore();
 const { todoList } = storeToRefs(store);
 const text = ref('');
@@ -15,9 +12,10 @@ onMounted(() => {
   store.fetchTodos();
 });
 
-
-
-
+function addTodo() {
+  store.addTodo(text.value);
+  text.value = '';
+}
 </script>
 
 <template>
@@ -29,16 +27,12 @@ onMounted(() => {
         v-model="text"
         class="input"
         placeholder="Add a new todo..."
-        @keyup.enter="store.addTodo(text)"
+        @keyup.enter="addTodo"
       />
-      <button class="todo__button" type="button" @click="store.addTodo(text)">Add todo</button>
+      <button class="todo__button" type="button" @click="addTodo">Add todo</button>
     </div>
     <TransitionGroup tag="div" name="fade" class="container">
-      <TodoItem
-        v-for="todo of todoList"
-        :key="todo.id"
-        :todo="todo"
-      />
+      <TodoItem v-for="todo of todoList" :key="todo.id" :todo="todo" />
     </TransitionGroup>
   </div>
 </template>
