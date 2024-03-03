@@ -5,7 +5,7 @@ import VercelIcon from '@/assets/svg/badges/vercel.svg';
 import CSSIcon from '@/assets/svg/badges/css3.svg';
 import PrettierIcon from '@/assets/svg/badges/prettier.svg';
 import VuedotjsIcon from '@/assets/svg/badges/vuedotjs.svg';
-
+import PiniaIcon from '@/assets/svg/badges/pinia.svg';
 import ESLintIcon from '@/assets/svg/badges/eslint.svg';
 </script>
 
@@ -15,6 +15,12 @@ import ESLintIcon from '@/assets/svg/badges/eslint.svg';
       <div class="flex">
         <span> Framework - Vue 3 </span>
         <VuedotjsIcon width="24" height="24" color="#4FC08D" />
+      </div>
+    </li>
+    <li class="item">
+      <div class="flex">
+        <span> State - Pinia </span>
+        <PiniaIcon width="24" height="24" />
       </div>
     </li>
     <li class="item">
