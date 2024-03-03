@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ListStack from '../components/ListStack.vue';
+import HomeIcon from '@/assets/home.svg';
 </script>
 
 <template>
@@ -10,7 +11,7 @@ import ListStack from '../components/ListStack.vue';
         <h2 class="stack__title">Stack на проекте:</h2>
         <ListStack />
       </div>
-      <img src="home.svg" alt="" />
+      <HomeIcon />
     </div>
   </div>
 </template>
