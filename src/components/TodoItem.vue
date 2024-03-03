@@ -50,6 +50,7 @@ function cancelEdit() {
       @keyup.enter="doneEdit(todo)"
       @keyup.escape="cancelEdit"
       @blur="doneEdit(todo)"
+      @vue:mounted="({ el }: any) => el.focus()"
     />
     <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
     <button class="delete" @click="emit('delTodo', todo.id)">X</button>
