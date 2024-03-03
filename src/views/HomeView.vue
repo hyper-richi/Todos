@@ -10,7 +10,7 @@ import ListStack from '../components/ListStack.vue';
         <h2 class="stack__title">Stack на проекте:</h2>
         <ListStack />
       </div>
-      <img src="../assets/home.svg" alt="" />
+      <img src="home.svg" alt="" />
     </div>
   </div>
 </template>
