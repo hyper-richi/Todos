@@ -35,9 +35,8 @@ function doneEdit(todo: Todo) {
   }
 }
 
-function cancelEdit(todo: Todo) {
+function cancelEdit() {
   editedTodo.value = null;
-  // todo.title = beforeEditCache;
 }
 </script>
 <template>
@@ -48,12 +47,10 @@ function cancelEdit(todo: Todo) {
       type="text"
       v-if="todo === editedTodo"
       v-model="text"
-      @vue:mounted="({ el }: { el: HTMLElement }) => el.focus()"
       @keyup.enter="doneEdit(todo)"
-      @keyup.escape="cancelEdit(todo)"
+      @keyup.escape="cancelEdit"
       @blur="doneEdit(todo)"
     />
-
     <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
     <button class="delete" @click="emit('delTodo', todo.id)">X</button>
   </div>
