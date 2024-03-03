@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTodoListStore } from '@/stores/todoList';
 import type { Todo } from '@/type';
 import { ref } from 'vue';
 
@@ -7,15 +8,10 @@ interface Props {
 }
 const editedTodo = ref();
 const text = ref('');
+const store = useTodoListStore();
 
 const { todo } = defineProps<Props>();
 const checked = ref(todo.done);
-
-const emit = defineEmits<{
-  (e: 'delTodo', id: string): void;
-  (e: 'editTodo', id: string, text: string): void;
-  (e: 'toggleTodo', todo: Todo): void;
-}>();
 
 let beforeEditCache = '';
 
@@ -28,20 +24,20 @@ function editTodo(todo: Todo) {
 function doneEdit(todo: Todo) {
   if (editedTodo.value) {
     editedTodo.value = null;
-    emit('editTodo', todo.id, text.value);
+    store.editTodo(todo.id, text.value);
     if (!todo.title) {
-      emit('delTodo', todo.id);
+      store.delTodo(todo.id);
     }
   }
 }
-
 function cancelEdit() {
   editedTodo.value = null;
 }
+
 </script>
 <template>
   <div class="item" :class="{ completed: checked, editing: todo === editedTodo }">
-    <input class="toggle" type="checkbox" v-model="checked" @change="emit('toggleTodo', todo)" />
+    <input class="toggle" type="checkbox" v-model="checked" @change="store.toggleTodo(todo)" />
     <input
       class="edit"
       type="text"
@@ -53,7 +49,7 @@ function cancelEdit() {
       @vue:mounted="({ el }: any) => el.focus()"
     />
     <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-    <button class="delete" @click="emit('delTodo', todo.id)">X</button>
+    <button class="delete" @click="store.delTodo(todo.id)">X</button>
   </div>
 </template>
 

@@ -3,80 +3,21 @@ import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import type { Todo } from '@/type/todo';
 import TodoItem from './TodoItem.vue';
+import { useTodoListStore } from '@/stores/todoList';
+import { storeToRefs } from 'pinia';
 
 const todos = ref([] as Todo[]);
-
+const store = useTodoListStore();
+const { todoList } = storeToRefs(store);
 const text = ref('');
 
 onMounted(() => {
-  getTodos();
+  store.fetchTodos();
 });
 
-const getTodos = async () => {
-  try {
-    const res = await axios.get(`https://3629744318c78c12.mokky.dev/todos`);
-    todos.value = res.data;
-  } catch (e) {
-    console.error('Произошла ошибка при получении данных', e);
-  }
-};
 
-const addTodo = async () => {
-  if (text.value) {
-    try {
-      const res = await axios.post('https://3629744318c78c12.mokky.dev/todos', {
-        title: text.value,
-        done: false
-      });
-      text.value = '';
-      if (res.status === 201) {
-        todos.value = [...todos.value, res.data];
-      }
-    } catch (e) {
-      console.error('Произошла ошибка при создании записи', e);
-    }
-  }
-};
 
-const toggleTodo = async (todo: Todo) => {
-  try {
-    const res = await axios.patch(`https://3629744318c78c12.mokky.dev/todos/${todo.id}`, {
-      done: !todo.done
-    });
-    if (res.status === 201) {
-      todos.value = res.data;
-    }
-  } catch (e) {
-    console.error('Произошла ошибка при создании записи', e);
-  }
-};
 
-const editTodo = async (id: string, text: string) => {
-  try {
-    const res = await axios.patch(`https://3629744318c78c12.mokky.dev/todos/${id}`, {
-      title: text
-    });
-
-    if (res.status === 200) {
-      const findIdx = todos.value.findIndex((item) => item.id === id);
-      todos.value.splice(findIdx, 1, res.data);
-    }
-  } catch (e) {
-    console.error('Произошла ошибка при изменении записи', e);
-  }
-};
-
-const delTodo = async (todoId: string) => {
-  try {
-    const res = await axios.delete(`https://3629744318c78c12.mokky.dev/todos/${todoId}`);
-
-    if (res.status === 200) {
-      todos.value = todos.value.filter((todo) => todo.id !== todoId);
-    }
-  } catch (e) {
-    console.error('Произошла ошибка при удалении записи', e);
-  }
-};
 </script>
 
 <template>
@@ -88,18 +29,15 @@ const delTodo = async (todoId: string) => {
         v-model="text"
         class="input"
         placeholder="Add a new todo..."
-        @keyup.enter="addTodo"
+        @keyup.enter="store.addTodo(text)"
       />
-      <button class="todo__button" type="button" @click="addTodo">Add todo</button>
+      <button class="todo__button" type="button" @click="store.addTodo(text)">Add todo</button>
     </div>
     <TransitionGroup tag="div" name="fade" class="container">
       <TodoItem
-        v-for="todo of todos"
+        v-for="todo of todoList"
         :key="todo.id"
         :todo="todo"
-        @delTodo="delTodo"
-        @editTodo="editTodo"
-        @toggleTodo="toggleTodo"
       />
     </TransitionGroup>
   </div>
@@ -198,3 +136,4 @@ const delTodo = async (todoId: string) => {
   position: absolute;
 }
 </style>
+@/stores/todoList
