@@ -1,13 +1,30 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
+
+const textColor = ref('#fff');
+
+// Функция для проверки текущей темы
+const checkTheme = () => {
+  const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  textColor.value = isDarkMode ? '#fff' : '#000'; // Устанавливаем цвет текста в зависимости от темы
+};
+
+// Проверяем тему при загрузке страницы
+onMounted(() => {
+  checkTheme();
+
+  // Добавляем слушатель на изменение темы
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', checkTheme);
+});
 </script>
 
 <template>
   <header class="header">
     <div class="wrapper">
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/todo">Todo</RouterLink>
+        <RouterLink to="/" :style="{ color: textColor }">Home</RouterLink>
+        <RouterLink to="/todo" :style="{ color: textColor }">Todo</RouterLink>
       </nav>
     </div>
   </header>
@@ -27,7 +44,6 @@ nav {
 }
 
 nav a {
-  color: #fff;
   text-decoration: none;
   transition: 0.4s;
   padding: 3px;
