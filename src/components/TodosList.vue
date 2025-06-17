@@ -130,4 +130,3 @@ function addTodo() {
   position: absolute;
 }
 </style>
-@/stores/todoList

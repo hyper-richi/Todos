@@ -4,6 +4,7 @@
 
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
+    "types": ["vite/client"], // or "vue" if using vue-cli
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "baseUrl": ".",

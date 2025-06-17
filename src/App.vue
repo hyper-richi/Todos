@@ -25,6 +25,7 @@ onMounted(() => {
       <nav>
         <RouterLink to="/" :style="{ color: textColor }">Home</RouterLink>
         <RouterLink to="/todo" :style="{ color: textColor }">Todo</RouterLink>
+        <RouterLink to="/examples" :style="{ color: textColor }">Examples</RouterLink>
       </nav>
     </div>
   </header>
